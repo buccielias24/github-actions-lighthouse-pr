@@ -12,34 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Skip steps if no Node project is present
-      - name: Check for package.json
-        id: check
-        run: |
-          if [ -f package.json ]; then
-            echo "has_node=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_node=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Setup Node
-        if: steps.check.outputs.has_node == 'true'
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
-      - name: Install
-        if: steps.check.outputs.has_node == 'true'
-        run: npm ci
+      - name: Install LHCI and static server
+        run: |
+          npm i -g @lhci/cli
+          npm i -g http-server
 
-      - name: Build (if present)
-        if: steps.check.outputs.has_node == 'true'
-        run: npm run build --if-present
+      - name: Start static server
+        run: |
+          http-server -p 8080 -c-1 . &
+          sleep 2
 
-      - name: Run Lighthouse CI
-        if: steps.check.outputs.has_node == 'true'
-        run: npx @lhci/cli autorun
+      - name: Run Lighthouse CI (thresholds)
+        run: lhci autorun --config=lighthouserc.json
