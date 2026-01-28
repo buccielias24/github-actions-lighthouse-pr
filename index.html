@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Test Lighthouse Failure</title>
+    <meta charset="UTF-8" />
+    <title>Accessible Lighthouse Test</title>
   </head>
   <body>
-    <!-- ❌ Imagen sin alt -->
-    <img src="https://via.placeholder.com/300">
+    <!-- ✅ Imagen con alt descriptivo -->
+    <img src="https://via.placeholder.com/300" alt="Placeholder sample image" />
 
-    <!-- ❌ Input sin label -->
-    <input type="text" placeholder="Your name">
+    <!-- ✅ Input con label asociado -->
+    <form>
+      <label for="name">Your name</label>
+      <input id="name" type="text" name="name" />
+    </form>
 
-    <!-- ❌ Botón sin texto accesible -->
-    <button></button>
+    <!-- ✅ Botón con texto accesible -->
+    <button type="button">Submit</button>
 
-    <!-- ❌ Contraste bajo -->
-    <p style="color: #ccc; background: #fff;">
-      Low contrast text
+    <!-- ✅ Contraste suficiente -->
+    <p style="color: #222; background: #fff;">
+      High contrast text
     </p>
   </body>
 </html>
