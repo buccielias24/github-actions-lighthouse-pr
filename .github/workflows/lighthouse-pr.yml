@@ -1,0 +1,45 @@
+name: Lighthouse (PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Skip steps if no Node project is present
+      - name: Check for package.json
+        id: check
+        run: |
+          if [ -f package.json ]; then
+            echo "has_node=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_node=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node
+        if: steps.check.outputs.has_node == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install
+        if: steps.check.outputs.has_node == 'true'
+        run: npm ci
+
+      - name: Build (if present)
+        if: steps.check.outputs.has_node == 'true'
+        run: npm run build --if-present
+
+      - name: Run Lighthouse CI
+        if: steps.check.outputs.has_node == 'true'
+        run: npx @lhci/cli autorun
