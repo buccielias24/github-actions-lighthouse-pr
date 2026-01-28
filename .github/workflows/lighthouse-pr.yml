@@ -10,7 +10,6 @@ permissions:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -18,15 +17,8 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install LHCI and static server
-        run: |
-          npm i -g @lhci/cli
-          npm i -g http-server
-
-      - name: Start static server
-        run: |
-          http-server -p 8080 -c-1 . &
-          sleep 2
+      - name: Install LHCI
+        run: npm i -g @lhci/cli
 
       - name: Run Lighthouse CI (thresholds)
         run: lhci autorun --config=lighthouserc.json
